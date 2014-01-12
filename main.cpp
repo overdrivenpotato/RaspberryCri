@@ -2,6 +2,7 @@
 #include <string>
 #include <sys/time.h>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <string.h>
 using namespace std;
@@ -44,9 +45,7 @@ int main()
     string path = strcat(getenv("HOME"), "/Benchmark.txt");
     cout << "Using file " << path << "\n";
 
-
-    ofstream file;
-    file.open(path.c_str(), ios::out | ios::app);
+    ofstream file(path.c_str(), ios::out | ios::app);
 
     if(!file.is_open()){
         cout << "Opening in trunc mode...\n";
@@ -58,7 +57,7 @@ int main()
     }
 
     Timer timer;
-    for(int i = 0; i < 400; i++){
+    for(int i = 0;; i++){
         timer.start();
         string str;
         for(int i = 0; i < 30000000; i++) {
@@ -66,10 +65,10 @@ int main()
         }
         timer.stop();
 
-        string w;
+        stringstream w;
         w << "Took: " << timer.duration() << "ms\n";
-        cout << w;
-        file << w;
+        cout << w.str();
+        file << w.str();
 
         file.flush();
     }
