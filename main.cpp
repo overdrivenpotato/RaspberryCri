@@ -40,9 +40,28 @@ public:
     }
 };
 
-int main()
+int main(int argc, char** argv)
 {
+    char* cpuData = "/sys/class/thermal/thermal_zone0/temp";
+    ifstream cpuTemp;
+
+    if (cpuTemp.fail()){
+        cerr << "Failed to get cpu info." << endl;
+        return 1;
+    }
+
+    int speed = 30000000;
     string path = strcat(getenv("HOME"), "/Benchmark.txt");
+    if(argc > 2)
+    {
+        try {
+            path = argv[1];
+            speed = atoi(argv[2]);
+        } catch (int e) { 
+            cerr << "Error parsing args.";
+            return -1;
+        }
+    }
     cout << "Using file " << path << "\n";
 
     ofstream file(path.c_str(), ios::out | ios::app);
@@ -55,18 +74,22 @@ int main()
             return -1;
         }
     }
-
+    
+    string cpuRead;
     Timer timer;
     for(int i = 0;; i++){
+        cpuTemp.open(cpuData);
+        getline(cpuTemp, cpuRead);
+        cpuTemp.close();
         timer.start();
         string str;
-        for(int i = 0; i < 30000000; i++) {
+        for(int i = 0; i < speed; i++) {
             str += i;
         }
         timer.stop();
 
         stringstream w;
-        w << "Took: " << timer.duration() << "ms\n";
+        w << "At " << (atoi(cpuRead.c_str()) / 1000.0) << "°C, the cpu took: " << timer.duration() << "ms\n";
         cout << w.str();
         file << w.str();
 
