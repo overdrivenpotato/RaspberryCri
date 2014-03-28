@@ -43,13 +43,14 @@ public:
 int main(int argc, char** argv)
 {
     char* cpuData = "/sys/class/thermal/thermal_zone0/temp";
-    ifstream cpuTemp;
+    ifstream cpuTemp(cpuData);
 
     if (cpuTemp.fail()){
         cerr << "Failed to get cpu info." << endl;
         return 1;
     }
-
+	cpuTemp.close();
+	
     int speed = 30000000;
     string path = strcat(getenv("HOME"), "/Benchmark.txt");
     if(argc > 2)
@@ -77,6 +78,7 @@ int main(int argc, char** argv)
     
     string cpuRead;
     Timer timer;
+    
     for(int i = 0;; i++){
         cpuTemp.open(cpuData);
         getline(cpuTemp, cpuRead);
