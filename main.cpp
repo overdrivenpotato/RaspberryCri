@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         cerr << "Failed to get cpu info." << endl;
         return 1;
     }
-	cpuTemp.close();
+    cpuTemp.close();
 	
     int speed = 30000000;
     string path = strcat(getenv("HOME"), "/Benchmark.txt");
